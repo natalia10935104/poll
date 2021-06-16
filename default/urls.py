@@ -4,6 +4,10 @@ from . import views
 urlpatterns = [
     path('poll2/', views.poll_list), 
     path('poll/', views.PollList.as_view()), 
-    path('poll/<int:pk>/', views.PollDetail.as_view()), 
+    path('poll/<int:pk>/', views.PollDetail.as_view(), name='poll_view'), 
     path('option/<int:oid>/', views.PollVote.as_view()),
+    path('poll/create/',views.PollCreate.as_view()),
+    path('poll/<int:pk>/edit/',views.PollEdit.as_view()),
+    path('poll/<int:pk>/delete/', views.PollDelete.as_view()),
+    path('option/create/<int:pid>/', views.OptionCreate.as_view()),
 ]
