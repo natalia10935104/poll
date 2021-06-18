@@ -27,9 +27,10 @@ class PollVote(RedirectView):
         return "/poll/{}/".format(op.poll_id)
 
 class PollCreate(CreateView):
-    model = Poll
+    model = Option
     fields = ['subject','desc'] 
     #fields = '_all_'
+    
 
     def get_success_url(self):
         return"/poll/{}?".format(self.object.id)
@@ -53,13 +54,25 @@ class PollDelete(DeleteView):
     template_name = "confirm_delete.html"
 
 class OptionCreate(CreateView):
+   model = Option
+   fields = ['title']
+   template_name ='default/poll_form.html' 
+   def form_valid(self, form):
+        form.instance.poll_id = self.kwargs['pk']
+        return super().form_valid(form)
+   def get_success_url(self):
+        return "/poll/{}/".format(self.object.poll_id)
+
+class OptionEdit(UpdateView):
     model = Option
     fields = ['title']
-    template_name = 'general_form.html'
+    pk_url_kwarg = 'oid'
+    template_name ='default/poll_form.html'
     def get_success_url(self):
-        return '/poll/'+str(self.kwargs['pid'])+'/'
-    def form_valid(self, form):
-        form.instance.poll_id = self.kwargs['pid']
-        return super().form_valid(form)
+        return "/poll/{}/".format(self.object.poll_id)
 
-    
+class OptionDelete(DeleteView):
+    model = Option
+    pk_url_kwarg = 'oid'
+    def get_success_url(self):
+        return "/poll/{}/".format(self.object.poll_id)
