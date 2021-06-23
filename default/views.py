@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, RedirectView,CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, RedirectView,CreateView,UpdateView,DeleteView
+from django.views.generic.base import TemplateView 
 from .models import Poll, Option
 
 # Create your views here.
@@ -25,52 +26,41 @@ class PollVote(RedirectView):
         op.count += 1
         op.save()
         return "/poll/{}/".format(op.poll_id)
-
-class PollCreate(CreateView):
-    model = Option
+class PollCreate(CreateView): 
+    model = Poll  
     fields = ['subject','desc'] 
-    #fields = '_all_'
+  
+    def get_success_url(self):
+       return "/poll/{}/".format(self.object.id)
     
-
+class PollEdit(UpdateView): 
+   
+    model = Poll
+    fields = ['subject','desc']
     def get_success_url(self):
-        return"/poll/{}?".format(self.object.id)
+        return "/poll/{}/".format(self.object.id)
 
-class PollEdit(UpdateView):
+class PollDelete(DeleteView): 
     model = Poll
-    fields = ['subjects','desc']
-
-    def get_success_url(self):
-        return"/poll/{}/".format(self.object.id)
-
-class PollUpdate(UpdateView):
-    model = Poll
-    fields = ['subject']        
-    success_url = '/poll/'      
-    template_name = 'general_form.html'
-
-class PollDelete(DeleteView):
-    model = Poll
-    success_url = '/poll/'
-    template_name = "confirm_delete.html"
-
+    success_url = "/poll/" 
 class OptionCreate(CreateView):
-   model = Option
-   fields = ['title']
-   template_name ='default/poll_form.html' 
-   def form_valid(self, form):
+    model = Option
+    fields = ['title'] 
+    template_name = "default/poll_form.html"
+    def form_valid(self,form):
         form.instance.poll_id = self.kwargs['pk']
-        return super().form_valid(form)
-   def get_success_url(self):
-        return "/poll/{}/".format(self.object.poll_id)
-
+        return super().form_valid(form) 
+    
+       
+        
 class OptionEdit(UpdateView):
     model = Option
     fields = ['title']
     pk_url_kwarg = 'oid'
-    template_name ='default/poll_form.html'
+    template_name="default/poll_form.html"
     def get_success_url(self):
         return "/poll/{}/".format(self.object.poll_id)
-
+       
 class OptionDelete(DeleteView):
     model = Option
     pk_url_kwarg = 'oid'

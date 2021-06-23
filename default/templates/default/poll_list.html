@@ -4,9 +4,9 @@
 <h1>投票主題</h1>
 <a href="/poll/create/">新增投票主題</a>
 <ul>
-    {% for p in poll_list %}
+    {% for poll in poll_list %}
     <li>
-       {{ poll.date_created }}
+       {{ p.date_created }}
     <a href="{{ poll.id }}/">{{ poll.subject }}</a> |
      <a href="{{ poll.id }}/edit/">編輯</a> |
      <a href="{{ poll.id }}/delete/">刪除</a> 
